@@ -6,8 +6,6 @@ User Service REST API
     - yarn add express : Node API framework
 - ES-Lint
     - yarn add --dev eslint (dev dependency) : give syntax rules
-    - yarn add --dev eslint-plugin-react (dev dependency) : for react
-    - yarn add --dev eslint-plugin-react-hooks (dev dependency) : for react hooks
     - yarn add --dev @typescript-eslint/eslint-plugin : TypeScript lint rules definition
     - yarn add --dev @typescript-eslint/parser : parser
 - Nodemon
