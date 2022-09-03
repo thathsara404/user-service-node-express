@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "outDir": "./app-dist",
+        "moduleResolution": "node",
+        "module": "CommonJS",
+        "allowJs": true,
+        "target": "ES2020",
+        "strict": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true
+    },
+    "include": ["./app/**/*",
+        "app.ts",
+        "dev-server.ts",
+        "server.ts"
+    ]
+}
