@@ -1,0 +1,6 @@
+# dependencies
+/node_modules
+# dist folder
+/app-dist
+# yarn error log
+yarn-error.log
