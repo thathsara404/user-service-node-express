@@ -11,6 +11,7 @@
     "watch-script": "tsc && yarn dev-start",
     "watch": "nodemon --exec yarn watch-script",
     "lint": "eslint . --ext .ts --ext .jsx --ext .js --quiet",
+    "test": "",
     "prepare": "husky install"
   },
   "engines": {
