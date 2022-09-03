@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  mysqldb:
+    container_name: userAPIdb
+    image: mysql:5.7
+    restart: unless-stopped
+    env_file: ./.env.dev
+    environment:
+      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE=$MYSQL_DATABASE
+    ports:
+      - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+    networks:
+      - user-api-network
+    volumes:
+      - db:/data/db
+  app-user-api:
+    depends_on:
+      - mysqldb
+    container_name: userAPI
+    build:
+      context: .
+      dockerfile: DockerFileDev
+    restart: unless-stopped
+    env_file: ./.env.dev
+    image: user-api
+    stdin_open: true
+    ports:
+      - $USER_API_LOCAL_PORT:$USER_API_DOCKER_PORT
+    networks:
+      - user-api-network
+networks:
+  user-api-network:
+    driver: bridge
+volumes:
+  db:
+
