@@ -1,9 +1,18 @@
 # USER-SERVICE-REST-API
 User Service REST API
+- Open API Specification : https://app.swaggerhub.com/apis/THATHSARARAVIRAJ/User-API/1.0.0#/
 
 # Technical Stack & External Dependencies 
 - Express
     - yarn add express : Node API framework
+- bcrypt
+    - yarn add bcrypt : Password hashing and salting
+- cors
+    - yarn add cors : Enable CORS
+- jsonwebtoken
+    - yarn add jsonwebtoken : Integrate Bearer token
+- Mongoose
+    - yarn add mongoose : Integrate ODM with MongoDB
 - ES-Lint
     - yarn add --dev eslint (dev dependency) : give syntax rules
     - yarn add --dev @typescript-eslint/eslint-plugin : TypeScript lint rules definition
@@ -16,6 +25,9 @@ User Service REST API
     - yarn add --dev @types/body-parser : type definition
     - yarn add --dev @types/express : type definition
     - yarn add --dev @types/node : type definition
+    - yarn add --dev @types/bcrypt : type definition
+    - yarn add --dev @types/cors : type definition
+    - yarn add --dev @types/jsonwebtoken : type definition
 - Winston
     - yarn add winston: Error logger
 - Jest
