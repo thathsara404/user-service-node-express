@@ -1,22 +1,22 @@
 version: '3.8'
 services:
-  mysqldb:
+  mongodb:
     container_name: userAPIdb
-    image: mysql:5.7
+    image: mongo
     restart: unless-stopped
     env_file: ./.env.dev
     environment:
-      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
-      - MYSQL_DATABASE=$MYSQL_DATABASE
+      - MONGO_INITDB_ROOT_USERNAME=$MONGODB_USER
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGODB_PASSWORD
     ports:
-      - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+      - $MONGO_LOCAL_PORT:$MONGO_DOCKER_PORT
     networks:
       - user-api-network
     volumes:
       - db:/data/db
   app-user-api:
     depends_on:
-      - mysqldb
+      - mongodb
     container_name: userAPI
     build:
       context: .
