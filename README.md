@@ -1,6 +1,6 @@
 # USER-SERVICE-REST-API
 User Service REST API
-- Open API Specification : https://app.swaggerhub.com/apis/THATHSARARAVIRAJ/User-API/1.0.0#/
+- Open API Specification : https://app.swaggerhub.com/apis-docs/THATHSARARAVIRAJ/User-API/1.0.0
 
 # Technical Stack & External Dependencies 
 - Express
