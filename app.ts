@@ -2,7 +2,7 @@
 
 import * as express from 'express';
 import config from './app/config/config';
-import connectToMongoDB from './app/data/db/connector';
+import { connectToMongoDB } from './app/data/db/connector';
 import sendErrorResponse from './app/middleware/errorBuilderMiddleware';
 import healthRoute from './app/route/healthRoute';
 import userRoute from './app/route/userRoute';

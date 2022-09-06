@@ -9,17 +9,11 @@ import DatabaseError from '../../type/error/DatabaseError';
 import { buildErrorMessage } from '../../util/logMessageBuilder';
 
 const Logging = Logger(__filename);
-const { MONGODB_USER, MONGODB_PASSWORD, MONGODB_HOST, MONGODB_DOCKER_PORT, MONGODB_DATABASE } = config.DB;
 
-const databaseURL: string = 'mongodb://'.concat(`${MONGODB_USER}:${MONGODB_PASSWORD}`).
-    concat(`@${MONGODB_HOST}:${MONGODB_DOCKER_PORT}`).
-    concat(`/${MONGODB_DATABASE}?authSource=admin`);
-console.log(databaseURL);
-console.log(databaseURL);
 // Mongo DB Connection
-const connectToMongoDB = async () => {
+export const connectToMongoDB = async () => {
     try {
-        await mongoose.connect(databaseURL, {
+        await mongoose.connect(prepareDBConnectionURL(), {
             autoIndex: true
         });
     } catch (error) {
@@ -31,4 +25,12 @@ const connectToMongoDB = async () => {
     }
 };
 
-export default connectToMongoDB;
+export const prepareDBConnectionURL = (): string => {
+    const { MONGODB_USER, MONGODB_PASSWORD, MONGODB_HOST, MONGODB_DOCKER_PORT, MONGODB_DATABASE } = config.DB;
+    const databaseURL: string = 'mongodb://'.concat(`${MONGODB_USER}:${MONGODB_PASSWORD}`).
+        concat(`@${MONGODB_HOST}:${MONGODB_DOCKER_PORT}`).
+        concat(`/${MONGODB_DATABASE}?authSource=admin`);
+    console.log(databaseURL);
+    return 'mongodb://testUser:test@localhost:27017/user_service?authSource=admin';
+};
+
