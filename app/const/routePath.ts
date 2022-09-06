@@ -1,7 +1,8 @@
 'use strict';
 
 enum RoutePath {
-    HEALTH = '/health'
+    HEALTH = '/health',
+    USERS = '/users'
 }
 
 export default RoutePath;

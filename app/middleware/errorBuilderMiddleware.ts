@@ -1,7 +1,7 @@
 'use strict';
 
 import ErrorType from '../const/errorType';
-import { HTTPServerError } from '../route/const/httpCode';
+import { HTTPServerError } from '../const/httpCode';
 import { SendErrorResponseFunc } from '../type/errorBuilderMiddlewareType';
 import { ErrorResponseBuilderResponse } from '../type/responseBuilderType';
 import { errorResponseBuilder } from '../util/responseBuilder';

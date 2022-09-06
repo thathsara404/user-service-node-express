@@ -2,7 +2,7 @@
 
 import App from './app';
 import config from './app/config/config';
-import RoutePath from './app/route/const/routePath';
+import RoutePath from './app/const/routePath';
 
 console.log('Starting User-API Dev Server...');
 

@@ -17,6 +17,6 @@ export const buildErrorMessage: BuildErrorMessageFunc = (error, routePath) => {
  * @param {string} routePath Route path that error occurred
  * @returns {string} Success log message
  */
-export const buildInfoMessageRouteHit: BuildSuccessMessageFunc = (routePath) => {
-    return `${routePath} route is being called.`;
+export const buildInfoMessageRouteHit: BuildSuccessMessageFunc = (routePath, username) => {
+    return `${routePath} route is being called by user ${username}.`;
 };

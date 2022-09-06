@@ -3,6 +3,7 @@
 export enum HTTPServerError {
     INTERNAL_SERVER_ERROR_CODE = 500,
     INTERNAL_SERVER_ERROR_MESSAGE= 'Internal Server Error',
+    DATABASE_ERROR_MESSAGE='Database Error',
 
     NOT_IMPLEMENTED_CODE = 501,
     NOT_IMPLEMENTED_MESSAGE = 'Not Implemented',
