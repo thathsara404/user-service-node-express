@@ -1,0 +1,9 @@
+/**
+* Install REST Client VSCode extension
+* To execute the bellow => cntrl + shift + p
+* Search for rest and select the run command 
+*/
+
+GET http://localhost:8000/user-api-dev/health
+
+POST http://localhost:8000/user-api-dev/users

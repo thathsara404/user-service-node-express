@@ -31,8 +31,10 @@ User Service REST API
 - Winston
     - yarn add winston: Error logger
 - Jest
-    - yarn add jest
-    - yarn add -D ts-jest@27.1.5:  Jest to test projects written in TypeScript
+    - yarn add jest --dev
+    - yarn add -D ts-jest:  Jest to test projects written in TypeScript
+- Supertest
+    - yarn add supertest --dev
 - env-cmd
     - yarn add --dev env-cmd: to manage different levels of environment variables while building and running the app locally
 - husky

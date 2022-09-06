@@ -5,8 +5,8 @@ import LogType from '../const/logType';
 import { Logger } from '../log/logger';
 import { buildErrorMessage, buildInfoMessageRouteHit } from '../util/logMessageBuilder';
 import { successResponseBuilder } from '../util/responseBuilder';
-import RoutePath from './const/routePath';
-import { HTTPSuccess } from './const/httpCode';
+import RoutePath from '../const/routePath';
+import { HTTPSuccess } from '../const/httpCode';
 import UserServiceError from '../type/error/UserServiceError';
 
 const router = Router();
@@ -23,7 +23,7 @@ const HealthRoutePath: string = RoutePath.HEALTH;
  */
 router.get(HealthRoutePath, (req: Request, res: Response, next: NextFunction): void => {
     try {
-        Logging.log(buildInfoMessageRouteHit(HealthRoutePath), LogType.INFO);
+        Logging.log(buildInfoMessageRouteHit(HealthRoutePath, 'user@mail.com'), LogType.INFO);
         const response: object = { success: 'User-API is up and running...' };
         res.status(HTTPSuccess.OK_CODE).json(successResponseBuilder(response));
     } catch (error) {

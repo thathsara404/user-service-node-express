@@ -6,4 +6,4 @@ export type BuildErrorMessageFunc =
     (arg0: UserServiceError, arg1: string) => string;
 
 export type BuildSuccessMessageFunc =
-    (arg0: string) => string;
+    (arg0: string, arg1: string) => string;
