@@ -8,10 +8,18 @@ export enum UserType {
 }
 
 export interface IUser {
-    id?: ObjectId
+    _id?: ObjectId
     firstName: string,
     lastName: string,
     role: UserType,
+    username?: string,
+    password?: string
+}
+export interface IUserDTO {
+    id?: ObjectId
+    firstName?: string,
+    lastName?: string,
+    role?: UserType,
     username?: string,
     password?: string
 }

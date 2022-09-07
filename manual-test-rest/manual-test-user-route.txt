@@ -4,6 +4,49 @@
 * Search for rest and select the run command 
 */
 
+----- Check health -----
+
 GET http://localhost:8000/user-api-dev/health
 
+----- Register user -----
+
 POST http://localhost:8000/user-api-dev/users
+content-type: application/json
+
+{
+    "firstName": "dasun",
+    "lastName": "charthura",
+    "role": "ADMIN",
+    "username": "d@gmail.com",
+    "password": "abCq2&!Ms"
+}
+
+----- Register user with invalid email -----
+
+POST http://localhost:8000/user-api-dev/users
+content-type: application/json
+
+{
+    "firstName": "dasun",
+    "lastName": "manoj",
+    "role": "ADMIN",
+    "username": "pgmail.com",
+    "password": "abCq2&!Ms"
+}
+
+----- Get user by firstName -----
+
+GET http://localhost:8000/user-api-dev/users/?firstName=dasun
+content-type: application/json
+
+GET http://localhost:8000/user-api-dev/users/?firstName=NoName
+content-type: application/json
+
+----- Get users with pagination or without pagination -----
+
+GET http://localhost:8000/user-api-dev/users/?pageCount=1&limitPerPage=2
+content-type: application/json
+
+GET http://localhost:8000/user-api-dev/users/
+content-type: application/json
+

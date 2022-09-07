@@ -4,7 +4,6 @@ import { Schema } from 'mongoose';
 import { IUser } from '../../const/UserType';
 
 const UserSchema = new Schema<IUser>({
-    id: { type: String },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     role: { type: String, required: true },

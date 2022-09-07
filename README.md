@@ -25,7 +25,7 @@ User Service REST API
     - yarn add --dev @types/body-parser : type definition
     - yarn add --dev @types/express : type definition
     - yarn add --dev @types/node : type definition
-    - yarn add --dev @types/bcrypt : type definition
+    - yarn add --dev @types/bcryptjs : type definition
     - yarn add --dev @types/cors : type definition
     - yarn add --dev @types/jsonwebtoken : type definition
 - Winston

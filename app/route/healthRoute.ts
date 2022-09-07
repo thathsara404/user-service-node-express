@@ -4,7 +4,6 @@ import { Router, Request, Response, NextFunction } from 'express';
 import LogType from '../const/logType';
 import { Logger } from '../log/logger';
 import { buildErrorMessage, buildInfoMessageRouteHit } from '../util/logMessageBuilder';
-import { successResponseBuilder } from '../util/responseBuilder';
 import RoutePath from '../const/routePath';
 import { HTTPSuccess } from '../const/httpCode';
 import UserServiceError from '../type/error/UserServiceError';
@@ -25,7 +24,7 @@ router.get(HealthRoutePath, (req: Request, res: Response, next: NextFunction): v
     try {
         Logging.log(buildInfoMessageRouteHit(HealthRoutePath, 'user@mail.com'), LogType.INFO);
         const response: object = { success: 'User-API is up and running...' };
-        res.status(HTTPSuccess.OK_CODE).json(successResponseBuilder(response));
+        res.status(HTTPSuccess.OK_CODE).send(response);
     } catch (error) {
         const errorLogMessage = buildErrorMessage(error as UserServiceError, HealthRoutePath);
         Logging.log(errorLogMessage, LogType.ERROR);

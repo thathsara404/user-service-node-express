@@ -4,10 +4,12 @@ import { Router, Request, Response, NextFunction } from 'express';
 import LogType from '../const/logType';
 import { Logger } from '../log/logger';
 import { buildErrorMessage, buildInfoMessageRouteHit } from '../util/logMessageBuilder';
-import { successResponseBuilder } from '../util/responseBuilder';
 import RoutePath from '../const/routePath';
 import { HTTPSuccess } from '../const/httpCode';
-import UserServiceError from '../type/error/UserServiceError';
+import { createUser, getUserByFirstName, getUsers } from '../controller/userController';
+import { successUserResponseBuilder } from '../util/responseBuilder';
+import { validateCreateUserRequestBody, validateHeader } from '../middleware/requestParamValidatorMiddleware';
+import { IUser } from '../const/UserType';
 
 const router = Router();
 const Logging = Logger(__filename);
@@ -21,17 +23,25 @@ const UserRoutePath: string = RoutePath.USERS;
  * @param {NextFunction} next Next middleware function
  * @returns {void}
  */
-router.get(UserRoutePath, (req: Request, res: Response, next: NextFunction): void => {
-    try {
-        Logging.log(buildInfoMessageRouteHit(UserRoutePath, 'user@mail.com'), LogType.INFO);
-        res.status(HTTPSuccess.OK_CODE).json(successResponseBuilder({
-            name: 'thathsara'
-        }));
-    } catch (error) {
-        const errorLogMessage = buildErrorMessage(error as UserServiceError, UserRoutePath);
-        Logging.log(errorLogMessage, LogType.ERROR);
-        next(error);
-    }
+router.get(UserRoutePath, validateHeader, (req: Request, res: Response, next: NextFunction): void => {
+    const username = req.username as string;
+    (async () => {
+        Logging.log(buildInfoMessageRouteHit(UserRoutePath, username), LogType.INFO);
+        const userFirstName = req.query.firstName as string;
+        if (userFirstName) {
+            const userData = await getUserByFirstName(userFirstName);
+            res.status(HTTPSuccess.OK_CODE).json(successUserResponseBuilder(userData));
+            return;
+        }
+        const pageCount: number = +(req.query?.pageCount?.toString() ?? 0);
+        const limitPerPage: number = +(req.query?.limitPerPage?.toString() ?? 0);
+        const users = await getUsers(pageCount, limitPerPage);
+        res.status(HTTPSuccess.OK_CODE).json(successUserResponseBuilder(users));
+    })().catch(error => {
+        const err = error as Error;
+        Logging.log(buildErrorMessage(err, UserRoutePath), LogType.ERROR);
+        next(err);
+    });
 });
 
 /**
@@ -41,12 +51,12 @@ router.get(UserRoutePath, (req: Request, res: Response, next: NextFunction): voi
  * @param {NextFunction} next Next middleware function
  * @returns {void}
  */
-router.post(UserRoutePath, (req: Request, res: Response, next: NextFunction): void => {
+// eslint-disable-next-line max-len
+router.post(UserRoutePath, validateHeader, validateCreateUserRequestBody, (req: Request, res: Response, next: NextFunction): void => {
     (async () => {
-        await new Promise(resolve => {
-            resolve({});
-        });
-        res.send();
+        const user = req.body as IUser;
+        await createUser(user);
+        res.sendStatus(HTTPSuccess.CREATED_CODE);
     })().catch(error => {
         next(error);
     });
