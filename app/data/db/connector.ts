@@ -5,8 +5,10 @@ import config from '../../config/config';
 import LogType from '../../const/logType';
 import { Logger } from '../../log/logger';
 import { HTTPServerError } from '../../const/httpCode';
-import DatabaseError from '../../type/error/DatabaseError';
 import { buildErrorMessage } from '../../util/logMessageBuilder';
+import UserServiceError from '../../type/error/UserServiceError';
+import ErrorType from '../../const/errorType';
+import { ISSUE_FOUND_WHILE_CONNECTING_DB_MESSAGE } from '../../const/errorMessage';
 
 const Logging = Logger(__filename);
 
@@ -17,9 +19,10 @@ export const connectToMongoDB = async () => {
             autoIndex: true
         });
     } catch (error) {
-        const dbError: DatabaseError = 
-            new DatabaseError(
-                HTTPServerError.DATABASE_ERROR_MESSAGE, error as string, HTTPServerError.INTERNAL_SERVER_ERROR_CODE); 
+        const err = error as Error;
+        const dbError = new UserServiceError(ErrorType
+            .DATABASE_ERROR, ISSUE_FOUND_WHILE_CONNECTING_DB_MESSAGE, err.
+            message, HTTPServerError.INTERNAL_SERVER_ERROR_CODE);
         Logging.log(buildErrorMessage(dbError, 'Database'), LogType.ERROR);
         throw dbError;
     }
@@ -31,6 +34,6 @@ export const prepareDBConnectionURL = (): string => {
         concat(`@${MONGODB_HOST}:${MONGODB_DOCKER_PORT}`).
         concat(`/${MONGODB_DATABASE}?authSource=admin`);
     console.log(databaseURL);
-    return 'mongodb://testUser:test@localhost:27017/user_service?authSource=admin';
+    return databaseURL;
 };
 

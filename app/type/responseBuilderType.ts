@@ -8,9 +8,6 @@ export interface ErrorResponseBuilderResponse {
 export type ErrorResponseBuilderFunc = 
     (arg0: UserServiceError) => ErrorResponseBuilderResponse;
 
-export interface SuccessResponseBuilderResponse {
-    data: object
-}
-export type SuccessResponseBuilderFunc =
-    (arg0: object) => SuccessResponseBuilderResponse
+export type SuccessResponseBuilderFunc<T> =
+    (arg0: T | Array<T>) => {data: T | Array<T>}
 

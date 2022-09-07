@@ -1,7 +1,7 @@
 'use strict';
 
 import ErrorType from '../../const/errorType';
-import IUserServiceError from '../userServiceErrorInterface';
+import IUserServiceError from './userServiceErrorInterface';
 
 class UserServiceError extends Error implements IUserServiceError {
     code: number;
@@ -12,9 +12,9 @@ class UserServiceError extends Error implements IUserServiceError {
 
     stack: string;
 
-    constructor (message: string, stack: string, code: number) {
+    constructor (name: ErrorType, message: string, stack: string, code: number) {
         super();
-        this.name = ErrorType.USER_SERVICE_ERROR;
+        this.name = name;
         this.message = message;
         this.stack = stack;
         this.code = code;

@@ -5,11 +5,11 @@ import { BuildErrorMessageFunc, BuildSuccessMessageFunc } from '../type/logMessa
 /**
  * Generate error log message
  * @param {UserServiceError} error Error object
- * @param {string} routePath Route path that error occurred
+ * @param {string} action Action failed
  * @returns {string} Error log message
  */
-export const buildErrorMessage: BuildErrorMessageFunc = (error, routePath) => {
-    return `Failed to complete ${routePath} due to error ${error.message}.`;
+export const buildErrorMessage: BuildErrorMessageFunc = (error, action) => {
+    return `Failed to complete ${action} due to error ${error.message}.`;
 };
 
 /**
