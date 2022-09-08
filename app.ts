@@ -4,6 +4,7 @@ import * as express from 'express';
 import config from './app/config/config';
 import { connectToMongoDB } from './app/data/db/connector';
 import sendErrorResponse from './app/middleware/errorBuilderMiddleware';
+import validateJWT from './app/middleware/jwtTokenValidationMiddleware';
 import healthRoute from './app/route/healthRoute';
 import userRoute from './app/route/userRoute';
 import UserServiceError from './app/type/error/UserServiceError';
@@ -15,6 +16,11 @@ const app = express();
     await connectToMongoDB();
 })().catch(error => {
     process.exit(1);
+});
+
+// Auth token validation
+app.use((req, res, next) => {
+    validateJWT(req, res, next);
 });
 
 // Parses incoming requests with JSON payloads (body-parser)

@@ -1,6 +1,6 @@
 'use strict';
 
-import { IUser } from '../const/UserType';
+import { IUser } from '../type/userType';
 import { PrepareDetailsToSendArrayFunc, PrepareDetailsToSendFunc } from '../type/userDetailBuilder';
 
 /**

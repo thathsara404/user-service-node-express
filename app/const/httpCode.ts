@@ -1,5 +1,10 @@
 'use strict';
 
+export enum HTTPRedirection {
+    RESOURCE_FOUND_AT_THIS_URL_CODE = 303,
+    RESOURCE_FOUND_AT_THIS_URL_MESSAGE = '',
+}
+
 export enum HTTPServerError {
     INTERNAL_SERVER_ERROR_CODE = 500,
     INTERNAL_SERVER_ERROR_MESSAGE= 'Internal Server Error',
@@ -23,11 +28,10 @@ export enum HTTPUserError {
     NOT_FOUND_MESSAGE = 'Not Found',
 
     METHOD_NOT_ALLOWED_CODE = 405,
-    METHOD_NOT_ALLOWED_MESSAGE = 'Method Not Allowed'
-}
+    METHOD_NOT_ALLOWED_MESSAGE = 'Method Not Allowed',
 
-export enum HTTPRedirection {
-
+    CONFLICT_ERROR_CODE = 409,
+    CONFLICT_ERROR_MESSAGE = 'Conflict'
 }
 
 export enum HTTPSuccess {

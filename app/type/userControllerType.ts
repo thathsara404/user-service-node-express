@@ -1,10 +1,13 @@
 'use strict';
 
-import { IUser, IUserDTO } from '../const/UserType';
+import { UserLoginResponse } from './responseType';
+import { IUser } from './userType';
 
 export type CreateUserFunc = (user: IUser) => Promise<IUser | undefined>;
 
 export type GetUserByFirstNameFunc = (firstName: string) => Promise<IUser>;
+
+export type UserLoginFunc = (username: string, password: string) => Promise<UserLoginResponse>;
 
 export type GetAllUsersReturnType = {
     records: Array<IUser>,

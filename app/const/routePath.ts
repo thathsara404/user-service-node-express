@@ -2,7 +2,8 @@
 
 enum RoutePath {
     HEALTH = '/health',
-    USERS = '/users'
+    USERS = '/users',
+    LOGIN = '/login'
 }
 
 export default RoutePath;

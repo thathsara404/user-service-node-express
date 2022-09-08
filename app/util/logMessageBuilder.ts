@@ -13,10 +13,21 @@ export const buildErrorMessage: BuildErrorMessageFunc = (error, action) => {
 };
 
 /**
- * Generate route is being hit log
+ * Generate route is being hit log message
  * @param {string} routePath Route path that error occurred
+ * @param {sting} userId User Identifier
  * @returns {string} Success log message
  */
-export const buildInfoMessageRouteHit: BuildSuccessMessageFunc = (routePath, username) => {
-    return `${routePath} route is being called by user ${username}.`;
+export const buildInfoMessageRouteHit: BuildSuccessMessageFunc = (routePath, userId) => {
+    return `${routePath} route is being called by user ${userId}.`;
+};
+
+/**
+ * Generate process completed log message
+ * @param {string} process Process user that completed
+ * @param {string} userId User identification 
+ * @returns {string} Success log message
+ */
+export const buildInfoMessageUserProcessCompleted: BuildSuccessMessageFunc = (process, username) => {
+    return `Request by ${username} has been completed of processing ${process}.`;
 };
