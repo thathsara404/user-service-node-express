@@ -2,16 +2,18 @@
 
 import UserModel from '../data/model/UserModel';
 import UserServiceError from '../type/error/UserServiceError';
-import { CreateUserFunc, GetAllUsersFunc, GetUserByFirstNameFunc } from '../type/userControllerType';
-import { IUser } from '../const/UserType';
-import { USER_NOT_FOUND_ERROR_MESSAGE } from '../const/errorMessage';
+import { CreateUserFunc, GetAllUsersFunc, GetUserByFirstNameFunc, UserLoginFunc } from '../type/userControllerType';
+import { IUser } from '../type/userType';
+import { USER_CREDENTIAL_INVALID_MESSAGE, USER_DATA_CONFLICT_MESSAGE, USER_NOT_FOUND_ERROR_MESSAGE } 
+    from '../const/errorMessage';
 import { Logger } from '../log/logger';
 import { buildErrorMessage } from '../util/logMessageBuilder';
 import ErrorType from '../const/errorType';
 import LogType from '../const/logType';
 import { HTTPUserError } from '../const/httpCode';
-import { hashPassword } from '../util/passwordUtil';
+import { compareHash, hashPassword } from '../util/passwordUtil';
 import { prepareUserArrayToSend, prepareUserDetailsToSend } from '../util/userDetailBuilder';
+import { generateJWT } from '../util/jwtBuilderUtil';
 
 const Logging = Logger(__filename);
 
@@ -36,6 +38,11 @@ export const createUser: CreateUserFunc = async (user) => {
         return data;
     } catch (error) {
         const err = error as Error;
+        // Build and throw error based on Mongo DB data conflict
+        if (err.message.includes('E11000')) {
+            throw new UserServiceError(
+                ErrorType.USER_DATA_CONFLICT, USER_DATA_CONFLICT_MESSAGE, '', HTTPUserError.CONFLICT_ERROR_CODE);
+        }
         Logging.log(buildErrorMessage(err, 'createUser'), LogType.ERROR);
         throw error;
     }
@@ -43,7 +50,7 @@ export const createUser: CreateUserFunc = async (user) => {
 
 /**
  * Get user data by user first name
- * @param {IUserDTO} user user object
+ * @param {string} firstName user first name
  * @returns {Promise<IUser>} Promise for user data
  */
 export const getUserByFirstName: GetUserByFirstNameFunc = async (firstName) => {
@@ -93,6 +100,34 @@ export const getUsers: GetAllUsersFunc = async (page, limit) => {
     } catch (error) {
         const err = error as Error;
         Logging.log(buildErrorMessage(err, 'getUsers'), LogType.ERROR);
+        throw error;
+    }
+};
+
+/**
+ * User login and if success, deliver JWT access token
+ * @param {IUserDTO} user user object
+ * @returns {Promise<IUser>} Promise for user data
+ */
+export const userLogin: UserLoginFunc = async (username, password) => {
+    try {
+        const userByUsername = await UserModel.findOne({ 'username': username }).exec() as IUser;
+        if (userByUsername) {
+            const isValidPassword = await compareHash(password, userByUsername.password as string);
+            if (isValidPassword) {
+                const claims = {
+                    role: userByUsername.role,
+                    _id: userByUsername._id as unknown as string
+                };
+                const successResponse = { token: generateJWT(claims) };
+                return successResponse;
+            }
+        }
+        throw new UserServiceError(
+            ErrorType.USER_SIGN_IN_ERROR, USER_CREDENTIAL_INVALID_MESSAGE, '', HTTPUserError.UNAUTHORIZED_CODE);
+    } catch (error) {
+        const err = error as Error;
+        Logging.log(buildErrorMessage(err, 'userLogin'), LogType.ERROR);
         throw error;
     }
 };

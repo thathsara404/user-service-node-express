@@ -1,8 +1,9 @@
 'use strict';
 
-import { IUser } from '../const/UserType';
+import { IUser } from '../type/userType';
 import { ErrorResponseBuilderFunc, SuccessResponseBuilderFunc } from '../type/responseBuilderType';
 import { GetAllUsersReturnType } from '../type/userControllerType';
+import { UserLoginResponse } from '../type/responseType';
 
 /**
  * Generate error response
@@ -18,6 +19,8 @@ export const errorResponseBuilder: ErrorResponseBuilderFunc = (error) => {
  * @param {object} data Built response
  * @returns {SuccessResponseBuilderResponse} Success response
  */
-export const successUserResponseBuilder: SuccessResponseBuilderFunc<IUser | GetAllUsersReturnType> = (data) => {
-    return { data: data };
-};
+export const successUserResponseBuilder: SuccessResponseBuilderFunc<IUser |
+    GetAllUsersReturnType | UserLoginResponse> = (data) => {
+        return { data: data };
+    };
+

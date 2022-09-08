@@ -22,10 +22,11 @@ const sendErrorResponse: SendErrorResponseFunc = (error, res) => {
         errorResponseBuilder(error);
     switch (error.name) {
         case ErrorType.USER_REGISTRATION_ERROR:
-            return res.status(error.code).json(finalErrorObject);
         case ErrorType.USER_RETRIEVAL_ERROR:
-            return res.status(error.code).json(finalErrorObject);
         case ErrorType.USER_INVALID_REQUEST:
+        case ErrorType.USER_DATA_CONFLICT:
+        case ErrorType.USER_SIGN_IN_ERROR:
+        case ErrorType.USER_UNAUTHORIZED:
             return res.status(error.code).json(finalErrorObject);
         default:
             Logging.log(buildErrorMessage(error, ''), LogType.ERROR);

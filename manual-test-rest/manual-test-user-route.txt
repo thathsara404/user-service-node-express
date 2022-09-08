@@ -14,10 +14,10 @@ POST http://localhost:8000/user-api-dev/users
 content-type: application/json
 
 {
-    "firstName": "dasun",
+    "firstName": "kasun",
     "lastName": "charthura",
-    "role": "ADMIN",
-    "username": "d@gmail.com",
+    "role": "CUSTOMER",
+    "username": "chathu@gmail.com",
     "password": "abCq2&!Ms"
 }
 
@@ -34,19 +34,38 @@ content-type: application/json
     "password": "abCq2&!Ms"
 }
 
+----- Login -----
+
+POST http://localhost:8000/user-api-dev/login
+content-type: application/json
+
+{
+    "username": "chathu@gmail.com",
+    "password": "abCq2&!Ms"
+}
+
 ----- Get user by firstName -----
 
 GET http://localhost:8000/user-api-dev/users/?firstName=dasun
 content-type: application/json
+Authorization: Bearer 
 
 GET http://localhost:8000/user-api-dev/users/?firstName=NoName
 content-type: application/json
+Authorization: Bearer 
 
 ----- Get users with pagination or without pagination -----
+// page count: num of groups you wanna create
+// page limitation: num of data rows you wanna request
+// 2:1 - two groups, wanna only the second group first
+// 1: 3 - One group, wanna only first three
 
-GET http://localhost:8000/user-api-dev/users/?pageCount=1&limitPerPage=2
+GET http://localhost:8000/user-api-dev/users/?pageCount=2&limitPerPage=2
 content-type: application/json
+Authorization: Bearer 
+
 
 GET http://localhost:8000/user-api-dev/users/
 content-type: application/json
+Authorization: Bearer 
 

@@ -6,7 +6,7 @@ import { USER_INVALID_REQUEST_MESSAGE } from '../const/errorMessage';
 import ErrorType from '../const/errorType';
 import { HTTPUserError } from '../const/httpCode';
 import LogType from '../const/logType';
-import { UserType } from '../const/UserType';
+import { UserType } from '../type/userType';
 import { Logger } from '../log/logger';
 import UserServiceError from '../type/error/UserServiceError';
 import { buildErrorMessage } from '../util/logMessageBuilder';
@@ -17,6 +17,16 @@ export const validateHeader = (req: Request, res: Response, next: NextFunction) 
     const validationCriteria = Joi.object({
         headers: {
             'content-type': Joi.string().valid('application/json').required()
+        }
+    });
+    validateRequest(req, next, validationCriteria);
+};
+
+export const validateUserLoginRequestBody = (req: Request, res: Response, next: NextFunction) => {
+    const validationCriteria = Joi.object({
+        body: {
+            username: Joi.string().required().empty(''),
+            password: Joi.string().required().empty('')
         }
     });
     validateRequest(req, next, validationCriteria);

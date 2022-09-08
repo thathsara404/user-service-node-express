@@ -1,6 +1,6 @@
 'use strict';
 
-import { IUser } from '../const/UserType';
+import { IUser } from './userType';
 
 export type PrepareDetailsToSendFunc = (arg0: IUser) => IUser;
 
