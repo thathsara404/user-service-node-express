@@ -48,11 +48,11 @@ content-type: application/json
 
 GET http://localhost:8000/user-api-dev/users/?firstName=dasun
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0aW1lIjoiMjAyMi0wOS0wOFQwNDo0ODo0MS4yNzhaIiwiZXhwIjo4MzEzMDYzMjA1LCJyb2xlcyI6WyJDVVNUT01FUiJdLCJpZCI6IjYzMTkwM2E5NDk1ZWY1ZWViODJmZmFjNiIsImlhdCI6MTY2MjYxMjUyMX0.b1ACZFs2hmN3UeFYCadb6KkC4MlJLxLdp2D0hi4JDTU
+Authorization: Bearer 
 
 GET http://localhost:8000/user-api-dev/users/?firstName=NoName
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0aW1lIjoiMjAyMi0wOS0wOFQwNDo0ODo0MS4yNzhaIiwiZXhwIjo4MzEzMDYzMjA1LCJyb2xlcyI6WyJDVVNUT01FUiJdLCJpZCI6IjYzMTkwM2E5NDk1ZWY1ZWViODJmZmFjNiIsImlhdCI6MTY2MjYxMjUyMX0.b1ACZFs2hmN3UeFYCadb6KkC4MlJLxLdp2D0hi4JDTU
+Authorization: Bearer 
 
 ----- Get users with pagination or without pagination -----
 // page count: num of groups you wanna create
@@ -62,10 +62,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0aW1lIjoiMjAyMi0wO
 
 GET http://localhost:8000/user-api-dev/users/?pageCount=2&limitPerPage=2
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0aW1lIjoiMjAyMi0wOS0wOFQwNDo0ODo0MS4yNzhaIiwiZXhwIjo4MzEzMDYzMjA1LCJyb2xlcyI6WyJDVVNUT01FUiJdLCJpZCI6IjYzMTkwM2E5NDk1ZWY1ZWViODJmZmFjNiIsImlhdCI6MTY2MjYxMjUyMX0.b1ACZFs2hmN3UeFYCadb6KkC4MlJLxLdp2D0hi4JDTU
+Authorization: Bearer 
 
 
 GET http://localhost:8000/user-api-dev/users/
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0aW1lIjoiMjAyMi0wOS0wOFQwNDo0ODo0MS4yNzhaIiwiZXhwIjo4MzEzMDYzMjA1LCJyb2xlcyI6WyJDVVNUT01FUiJdLCJpZCI6IjYzMTkwM2E5NDk1ZWY1ZWViODJmZmFjNiIsImlhdCI6MTY2MjYxMjUyMX0.b1ACZFs2hmN3UeFYCadb6KkC4MlJLxLdp2D0hi4JDTU
+Authorization: Bearer 
 
