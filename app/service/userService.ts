@@ -2,7 +2,8 @@
 
 import UserModel from '../data/model/UserModel';
 import UserServiceError from '../type/error/UserServiceError';
-import { CreateUserFunc, GetAllUsersFunc, GetUserByFirstNameFunc, UserLoginFunc } from '../type/userControllerType';
+import { CreateUserFunc, GetAllUsersFunc, GetUserByFirstNameFunc, UpdateFuncStatus, UserLoginFunc, UserUpdateFunc }
+    from '../type/userServiceType';
 import { IUser } from '../type/userType';
 import { USER_CREDENTIAL_INVALID_MESSAGE, USER_DATA_CONFLICT_MESSAGE, USER_NOT_FOUND_ERROR_MESSAGE } 
     from '../const/errorMessage';
@@ -14,6 +15,8 @@ import { HTTPUserError } from '../const/httpCode';
 import { compareHash, hashPassword } from '../util/passwordUtil';
 import { prepareUserArrayToSend, prepareUserDetailsToSend } from '../util/userDetailBuilder';
 import { generateJWT } from '../util/jwtBuilderUtil';
+import mongoose, { ObjectId } from 'mongoose';
+import { serviceErrorBuilder } from '../util/serviceErrorBuilder';
 
 const Logging = Logger(__filename);
 
@@ -38,11 +41,7 @@ export const createUser: CreateUserFunc = async (user) => {
         return data;
     } catch (error) {
         const err = error as Error;
-        // Build and throw error based on Mongo DB data conflict
-        if (err.message.includes('E11000')) {
-            throw new UserServiceError(
-                ErrorType.USER_DATA_CONFLICT, USER_DATA_CONFLICT_MESSAGE, '', HTTPUserError.CONFLICT_ERROR_CODE);
-        }
+        serviceErrorBuilder(err.message);
         Logging.log(buildErrorMessage(err, 'createUser'), LogType.ERROR);
         throw error;
     }
@@ -50,7 +49,7 @@ export const createUser: CreateUserFunc = async (user) => {
 
 /**
  * Get user data by user first name
- * @param {string} firstName user first name
+ * @param {string} firstName User first name
  * @returns {Promise<IUser>} Promise for user data
  */
 export const getUserByFirstName: GetUserByFirstNameFunc = async (firstName) => {
@@ -105,9 +104,10 @@ export const getUsers: GetAllUsersFunc = async (page, limit) => {
 };
 
 /**
- * User login and if success, deliver JWT access token
- * @param {IUserDTO} user user object
- * @returns {Promise<IUser>} Promise for user data
+ * User login and if success, send JWT access token
+ * @param {string} username User's username
+ * @param {string} password User's password
+ * @returns {Promise<UserLoginResponse>} Promise for user data
  */
 export const userLogin: UserLoginFunc = async (username, password) => {
     try {
@@ -128,6 +128,50 @@ export const userLogin: UserLoginFunc = async (username, password) => {
     } catch (error) {
         const err = error as Error;
         Logging.log(buildErrorMessage(err, 'userLogin'), LogType.ERROR);
+        throw error;
+    }
+};
+
+/**
+ * User update
+ * @param {string} userId User's unique identifier
+ * @param {IUser} user User data
+ * @returns {Promise<IUser | null>} Promise for user data
+ */
+export const updateUser: UserUpdateFunc = async (userId, user) => {
+    try {
+        const dataReceived: IUser = {
+            firstName: user.firstName,
+            lastName: user.lastName,
+            role: user.role,
+            username: user.username,
+            password: user.password
+        };
+        const userIdAsObjectId = new mongoose.Types.ObjectId(userId);
+        const filter = {
+            _id: userIdAsObjectId
+        };
+        const userFound: IUser | null = await UserModel.findById(filter);
+        const userData = {
+            firstName: userFound?.firstName,
+            lastName: userFound?.lastName,
+            role: userFound?.role,
+            username: userFound?.username,
+            password: userFound?.password
+        };
+        if (userFound) {
+            const newUserData = { ...userData, ...dataReceived };
+            await UserModel.updateOne(filter, newUserData);
+            return UpdateFuncStatus.UPDATED;
+        }
+        dataReceived['_id'] = userId as unknown as ObjectId;
+        const userModel = new UserModel(dataReceived);
+        await userModel.save();
+        return UpdateFuncStatus.CREATED;
+    } catch (error) {
+        const err = error as Error;
+        serviceErrorBuilder(err.message);
+        Logging.log(buildErrorMessage(err, 'updateUser'), LogType.ERROR);
         throw error;
     }
 };
