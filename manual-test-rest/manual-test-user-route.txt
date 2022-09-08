@@ -14,17 +14,17 @@ POST http://localhost:8000/user-api-dev/users
 content-type: application/json
 
 {
-    "firstName": "kasun",
-    "lastName": "charthura",
+    "firstName": "Ajantha",
+    "lastName": "Mendis",
     "role": "CUSTOMER",
-    "username": "chathu@gmail.com",
+    "username": "ajanmen@gmail.com",
     "password": "abCq2&!Ms"
 }
 
 ----- Register user with invalid email -----
 
 POST http://localhost:8000/user-api-dev/users
-content-type: application/json
+content-type: application/json 
 
 {
     "firstName": "dasun",
@@ -40,13 +40,13 @@ POST http://localhost:8000/user-api-dev/login
 content-type: application/json
 
 {
-    "username": "chathu@gmail.com",
+    "username": "damith@gmail.com",
     "password": "abCq2&!Ms"
 }
 
 ----- Get user by firstName -----
 
-GET http://localhost:8000/user-api-dev/users/?firstName=dasun
+GET http://localhost:8000/user-api-dev/users/?firstName=Jothi
 content-type: application/json
 Authorization: Bearer 
 
@@ -60,12 +60,28 @@ Authorization: Bearer
 // 2:1 - two groups, wanna only the second group first
 // 1: 3 - One group, wanna only first three
 
-GET http://localhost:8000/user-api-dev/users/?pageCount=2&limitPerPage=2
+GET http://localhost:8000/user-api-dev/users/?pageCount=2&limitPerPage=9
 content-type: application/json
 Authorization: Bearer 
 
+
+// Default pagination 1 : 10
 
 GET http://localhost:8000/user-api-dev/users/
 content-type: application/json
 Authorization: Bearer 
 
+----- Update user -----
+
+PUT http://localhost:8000/user-api-dev/users/631a1f23894d9eb9ae41a699
+content-type: application/json
+Authorization: Bearer 
+
+{
+    "_id": "6318bd758df8450d6e13ec50",
+    "firstName": "Jothi",
+    "lastName": "Jothi",
+    "username": "jothi@gmail.com",
+    "role": "CUSTOMER",
+    "password": "abCq2&!Ms"
+}

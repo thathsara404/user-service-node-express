@@ -5,6 +5,12 @@ import config from '../config/config';
 import { JWTClaims } from '../type/jwtClaimType';
 import { GenerateTokenFunc } from '../type/tokenGenerator';
 
+/**
+ * Generate JWT token
+ * @param {UserServiceError} error Error object
+ * @param {string} claimData User claims
+ * @returns {string} JWT token
+ */
 export const generateJWT: GenerateTokenFunc = (claimData) => {
     const claims: JWTClaims = {
         time: new Date(),

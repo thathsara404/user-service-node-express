@@ -2,7 +2,7 @@
 
 import { IUser } from '../type/userType';
 import { ErrorResponseBuilderFunc, SuccessResponseBuilderFunc } from '../type/responseBuilderType';
-import { GetAllUsersReturnType } from '../type/userControllerType';
+import { GetAllUsersReturnType } from '../type/userServiceType';
 import { UserLoginResponse } from '../type/responseType';
 
 /**

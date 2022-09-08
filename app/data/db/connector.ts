@@ -33,7 +33,6 @@ export const prepareDBConnectionURL = (): string => {
     const databaseURL: string = 'mongodb://'.concat(`${MONGODB_USER}:${MONGODB_PASSWORD}`).
         concat(`@${MONGODB_HOST}:${MONGODB_DOCKER_PORT}`).
         concat(`/${MONGODB_DATABASE}?authSource=admin`);
-    console.log(databaseURL);
     return databaseURL;
 };
 

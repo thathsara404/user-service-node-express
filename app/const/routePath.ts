@@ -1,9 +1,11 @@
 'use strict';
 
-enum RoutePath {
+export enum RoutePath {
     HEALTH = '/health',
     USERS = '/users',
     LOGIN = '/login'
 }
 
-export default RoutePath;
+export enum PathParam {
+    USER_ID = '/:userId'
+}

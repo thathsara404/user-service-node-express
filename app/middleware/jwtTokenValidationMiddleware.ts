@@ -8,7 +8,7 @@ import ErrorType from '../const/errorType';
 import { USER_ACCESS_TOKEN_INVALID_MESSAGE } from '../const/errorMessage';
 import { HTTPUserError } from '../const/httpCode';
 import UserServiceError from '../type/error/UserServiceError';
-import RoutePath from '../const/routePath';
+import { RoutePath } from '../const/routePath';
 import { JWTClaims } from '../type/jwtClaimType';
 import { buildInfoMessageUserProcessCompleted } from '../util/logMessageBuilder';
 import LogType from '../const/logType';
@@ -21,7 +21,7 @@ const validateJWT = (req: Request, res: Response, next: NextFunction) => {
         (req.path !== `${config.ROUTE_PATH}${RoutePath.USERS}` && req.method !== 'POST')) {
         const authHeader = req.headers.authorization as string;
         const [authType, authToken] = authHeader.split(' ');
-        if (authType && authType === 'Bearer') {
+        if (authType && authType === 'Bearer' && authToken) {
             jwt.verify(authToken, config.JSON_WEB_TOKEN_SECRET, (
                 error, decode) => {
                 if (error) {
