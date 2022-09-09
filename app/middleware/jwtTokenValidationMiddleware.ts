@@ -19,8 +19,8 @@ const validateJWT = (req: Request, res: Response, next: NextFunction) => {
     if (req.path !== `${config.ROUTE_PATH}${RoutePath.LOGIN}` &&
         req.path !== `${config.ROUTE_PATH}${RoutePath.HEALTH}` &&
         (req.path !== `${config.ROUTE_PATH}${RoutePath.USERS}` && req.method !== 'POST')) {
-        const authHeader = req.headers.authorization as string;
-        const [authType, authToken] = authHeader.split(' ');
+        const authHeader = req?.headers?.authorization as string;
+        const [authType, authToken] = authHeader ? authHeader?.split(' ') : [null, null];
         if (authType && authType === 'Bearer' && authToken) {
             jwt.verify(authToken, config.JSON_WEB_TOKEN_SECRET, (
                 error, decode) => {

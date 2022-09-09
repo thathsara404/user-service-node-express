@@ -13,7 +13,7 @@ export const prepareUserDetailsToSend: PrepareDetailsToSendFunc = (user) => {
         _id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
-        email: user.username,
+        email: user.email,
         role: user.role
     };
     return filteredData;

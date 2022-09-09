@@ -2,10 +2,13 @@
 
 import UserModel from '../data/model/UserModel';
 import UserServiceError from '../type/error/UserServiceError';
-import { CreateUserFunc, GetAllUsersFunc, GetUserByFirstNameFunc, UpdateFuncStatus, UserLoginFunc, UserUpdateFunc }
+import { CreateUserFunc, GetAllUsersFunc,
+    GetUserByFirstNameFunc, UpdateFuncStatus,
+    UserDeleteFunc,
+    UserFindAndUpdateFunc, UserLoginFunc, UserSaveFunc, UserUpdateFunc }
     from '../type/userServiceType';
 import { IUser } from '../type/userType';
-import { USER_CREDENTIAL_INVALID_MESSAGE, USER_DATA_CONFLICT_MESSAGE, USER_NOT_FOUND_ERROR_MESSAGE } 
+import { USER_CREDENTIAL_INVALID_MESSAGE, USER_NOT_FOUND_ERROR_MESSAGE } 
     from '../const/errorMessage';
 import { Logger } from '../log/logger';
 import { buildErrorMessage } from '../util/logMessageBuilder';
@@ -17,13 +20,14 @@ import { prepareUserArrayToSend, prepareUserDetailsToSend } from '../util/userDe
 import { generateJWT } from '../util/jwtBuilderUtil';
 import mongoose, { ObjectId } from 'mongoose';
 import { serviceErrorBuilder } from '../util/serviceErrorBuilder';
+import { userCreatePayloadValidationCriteria, validateData } from '../middleware/requestValidatorMiddleware';
 
 const Logging = Logger(__filename);
 
 /**
  * Create new user
  * @param {IUserDTO} user User object
- * @returns {Promise<IUser>} Promise for user data
+ * @returns {Promise<IUser>} Promise with user data
  */
 export const createUser: CreateUserFunc = async (user) => {
     try {
@@ -33,11 +37,11 @@ export const createUser: CreateUserFunc = async (user) => {
             firstName: user.firstName,
             lastName: user.lastName,
             role: user.role,
+            email: user.email,
             username: user.username,
             password: hashedPassword
         };
-        const userModel = new UserModel(userExtracted);
-        const data = await userModel.save();
+        const data = await saveUser(userExtracted);
         return data;
     } catch (error) {
         const err = error as Error;
@@ -50,7 +54,7 @@ export const createUser: CreateUserFunc = async (user) => {
 /**
  * Get user data by user first name
  * @param {string} firstName User first name
- * @returns {Promise<IUser>} Promise for user data
+ * @returns {Promise<IUser>} Promise with user data
  */
 export const getUserByFirstName: GetUserByFirstNameFunc = async (firstName) => {
     try {
@@ -73,7 +77,7 @@ export const getUserByFirstName: GetUserByFirstNameFunc = async (firstName) => {
  * @param {number} page No of pages requested
  * @param {number} limit Limit per page
  * @returns {Promise<Promise<{records: Array<IUser>,
- * totalPages: number,currentPage: number>>} Promise for user data
+ * totalPages: number,currentPage: number>>} Promise with user data
  */
 export const getUsers: GetAllUsersFunc = async (page, limit) => {
     try {
@@ -107,7 +111,7 @@ export const getUsers: GetAllUsersFunc = async (page, limit) => {
  * User login and if success, send JWT access token
  * @param {string} username User's username
  * @param {string} password User's password
- * @returns {Promise<UserLoginResponse>} Promise for user data
+ * @returns {Promise<UpdateFuncStatus>} Promise with the action status
  */
 export const userLogin: UserLoginFunc = async (username, password) => {
     try {
@@ -134,16 +138,88 @@ export const userLogin: UserLoginFunc = async (username, password) => {
 
 /**
  * User update
+ * You should have all the mandatory user data to call this method
+ * @param {string} userId User's unique identifier
+ * @param {IUser} user User data
+ * @returns {Promise<UpdateFuncStatus>} Promise with the action status
+ */
+export const updateUser: UserUpdateFunc = async (userId, user) => {
+    try {
+        const userData = { ...user };
+        const result = await findOneAndUpdate(userId, userData);
+        if (result) {
+            return UpdateFuncStatus.UPDATED;
+        }
+        userData['_id'] = userId as unknown as ObjectId;
+        const userModel = new UserModel(userData);
+        await userModel.save();
+        return UpdateFuncStatus.CREATED;
+    } catch (error) {
+        const err = error as Error;
+        serviceErrorBuilder(err.message);
+        Logging.log(buildErrorMessage(err, 'updateUser'), LogType.ERROR);
+        throw error;
+    }
+};
+
+/**
+ * User patch
  * @param {string} userId User's unique identifier
  * @param {IUser} user User data
  * @returns {Promise<IUser | null>} Promise for user data
  */
-export const updateUser: UserUpdateFunc = async (userId, user) => {
+export const patchUser: UserUpdateFunc = async (userId, user) => {
+    try {
+        const userData = { ...user };
+        const result = await findOneAndUpdate(userId, userData);
+        if (result) {
+            return UpdateFuncStatus.UPDATED;
+        }
+        // Validate patch data before create a new record to check all the required fields are available
+        const userDataToValidate = { body: userData };
+        validateData(userDataToValidate, userCreatePayloadValidationCriteria);
+        await saveUser(userData);
+        return UpdateFuncStatus.CREATED;
+    } catch (error) {
+        const err = error as Error;
+        serviceErrorBuilder(err.message);
+        Logging.log(buildErrorMessage(err, 'updateUser'), LogType.ERROR);
+        throw error;
+    }
+};
+
+/**
+ * Delete patch
+ * @param {string} userId User's unique identifier
+ */
+export const deleteUser: UserDeleteFunc = async (userId) => {
+    try {
+        const userIdAsObjectId = new mongoose.Types.ObjectId(userId);
+        const filter = {
+            _id: userIdAsObjectId
+        };
+        await UserModel.deleteOne(filter);
+    } catch (error) {
+        const err = error as Error;
+        serviceErrorBuilder(err.message);
+        Logging.log(buildErrorMessage(err, 'updateUser'), LogType.ERROR);
+        throw error;
+    }
+};
+
+/**
+ * Find one and update wrapper
+ * @param {string} userId Unique identifier of user
+ * @param {IUser} user New user data 
+ * @returns {IUser | null} Returns null if update doesn't happen. If update success, return IUser
+ */
+const findOneAndUpdate: UserFindAndUpdateFunc = async (userId, user) => {
     try {
         const dataReceived: IUser = {
-            firstName: user.firstName,
+            firstName: user?.firstName,
             lastName: user.lastName,
             role: user.role,
+            email: user.email,
             username: user.username,
             password: user.password
         };
@@ -160,18 +236,35 @@ export const updateUser: UserUpdateFunc = async (userId, user) => {
             password: userFound?.password
         };
         if (userFound) {
+            // Update the document in an atomic way.
             const newUserData = { ...userData, ...dataReceived };
             await UserModel.updateOne(filter, newUserData);
-            return UpdateFuncStatus.UPDATED;
+            return newUserData;
         }
-        dataReceived['_id'] = userId as unknown as ObjectId;
-        const userModel = new UserModel(dataReceived);
-        await userModel.save();
-        return UpdateFuncStatus.CREATED;
+        return null;
     } catch (error) {
         const err = error as Error;
         serviceErrorBuilder(err.message);
-        Logging.log(buildErrorMessage(err, 'updateUser'), LogType.ERROR);
+        Logging.log(buildErrorMessage(err, 'findOneAndUpdate'), LogType.ERROR);
         throw error;
     }
 };
+
+/**
+ * Save user object wrapper
+ * @param {IUser} user New user data 
+ * @returns {IUser} Returns IUser object
+ */
+const saveUser: UserSaveFunc = async (user) => {
+    try {
+        const userModel = new UserModel(user);
+        const result = await userModel.save();
+        return result;
+    } catch (error) {
+        const err = error as Error;
+        serviceErrorBuilder(err.message);
+        Logging.log(buildErrorMessage(err, 'saveUser'), LogType.ERROR);
+        throw error;
+    }
+};
+

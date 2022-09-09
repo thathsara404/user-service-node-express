@@ -7,9 +7,11 @@ import { buildErrorMessage, buildInfoMessageRouteHit, buildInfoMessageUserProces
     from '../util/logMessageBuilder';
 import { PathParam, RoutePath } from '../const/routePath';
 import { HTTPSuccess } from '../const/httpCode';
-import { createUser, getUserByFirstName, getUsers, updateUser, userLogin } from '../service/userService';
+import { createUser, deleteUser,
+    getUserByFirstName, getUsers, patchUser, updateUser, userLogin } from '../service/userService';
 import { successUserResponseBuilder } from '../util/responseBuilder';
-import { validateCreateUserRequestBody, validateHeader, validateParamUserId, validateUserLoginRequestBody } 
+import { validateCreateUserRequestBody, validateHeader, validateParamUserId,
+    validateUserLoginRequestBody, validateUserPatchRequestBody } 
     from '../middleware/requestValidatorMiddleware';
 import { IUser } from '../type/userType';
 import { UserLoginResponse } from '../type/responseType';
@@ -119,4 +121,55 @@ router.put(RoutePath.USERS + PathParam.USER_ID, validateHeader, validateParamUse
         next(error);
     });
 });
+
+/**
+ * User patch
+ * @param {Request} req Request object
+ * @param {Response} res Response object
+ * @param {NextFunction} next Next middleware function
+ * @returns {void}
+ */
+router.patch(RoutePath.USERS + PathParam.USER_ID, validateHeader, validateParamUserId, validateUserPatchRequestBody, (
+    req: Request, res: Response, next: NextFunction): void => {
+    const userId = req.userId as string;
+    const pathParamUserId = req.params.userId;
+    (async () => {
+        Logging.log(buildInfoMessageRouteHit(req.path, userId), LogType.INFO);
+        const user = req.body as IUser;
+        const loginResult: UpdateFuncStatus = await patchUser(pathParamUserId, user);
+        Logging.log(buildInfoMessageUserProcessCompleted('Patch', userId), LogType.INFO);
+        if (loginResult === UpdateFuncStatus.CREATED) {
+            return res.sendStatus(HTTPSuccess.CREATED_CODE);
+        }
+        return res.sendStatus(HTTPSuccess.NO_CONTENT_CODE);
+    })().catch(error => {
+        const err = error as Error;
+        Logging.log(buildErrorMessage(err, UserRoutePath), LogType.ERROR);
+        next(error);
+    });
+});
+
+/**
+ * User delete
+ * @param {Request} req Request object
+ * @param {Response} res Response object
+ * @param {NextFunction} next Next middleware function
+ * @returns {void}
+ */
+router.delete(RoutePath.USERS + PathParam.USER_ID, validateHeader, validateParamUserId, (
+    req: Request, res: Response, next: NextFunction): void => {
+    const userId = req.userId as string;
+    const pathParamUserId = req.params.userId;
+    (async () => {
+        Logging.log(buildInfoMessageRouteHit(req.path, userId), LogType.INFO);
+        await deleteUser(pathParamUserId);
+        Logging.log(buildInfoMessageUserProcessCompleted('Delete', userId), LogType.INFO);
+        return res.sendStatus(HTTPSuccess.NO_CONTENT_CODE);
+    })().catch(error => {
+        const err = error as Error;
+        Logging.log(buildErrorMessage(err, UserRoutePath), LogType.ERROR);
+        next(error);
+    });
+});
+
 export default router;
