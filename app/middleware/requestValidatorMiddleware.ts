@@ -2,14 +2,15 @@
 
 import { Request, Response, NextFunction } from 'express';
 import * as Joi from 'joi';
-import { USER_INVALID_REQUEST_MESSAGE } from '../const/errorMessage';
-import ErrorType from '../const/errorType';
-import { HTTPUserError } from '../const/httpCode';
+import { CONTENT_TYPE_REQUIRED, USER_EMAIL_REQUIRED, USER_FIRST_NAME_REQUIRED, 
+    USER_ID_REQUIRED_IN_PATH, 
+    USER_LAST_NAME_REQUIRED, USER_PASSWORD_REQUIRED, USER_ROLE_REQUIRED, USER_USERNAME_REQUIRED } 
+    from '../const/errorMessage';
 import LogType from '../const/logType';
 import { UserType } from '../type/userType';
 import { Logger } from '../log/logger';
-import UserServiceError from '../type/error/UserServiceError';
 import { buildErrorMessage } from '../util/logMessageBuilder';
+import { validatorErrorBuilder } from '../util/serviceErrorBuilder';
 
 const Logging = Logger(__filename);
 
@@ -17,7 +18,9 @@ const Logging = Logger(__filename);
 export const validateHeader = (req: Request, res: Response, next: NextFunction) => {
     const validationCriteria = Joi.object({
         headers: {
-            'content-type': Joi.string().valid('application/json').required()
+            'content-type': Joi.string().valid('application/json').required().error((error) => { 
+                const err = error as Error | unknown;
+                return validatorErrorBuilder(err as Error, CONTENT_TYPE_REQUIRED); })
         }
     });
     validateRequest(req, next, validationCriteria);
@@ -27,7 +30,9 @@ export const validateHeader = (req: Request, res: Response, next: NextFunction) 
 export const validateParamUserId = (req: Request, res: Response, next: NextFunction) => {
     const validationCriteria = Joi.object({
         params: {
-            userId: Joi.string().required().empty('')
+            userId: Joi.string().required().error((error) => { 
+                const err = error as Error | unknown;
+                return validatorErrorBuilder(err as Error, USER_ID_REQUIRED_IN_PATH); })
         }
     });
     validateRequest(req, next, validationCriteria);
@@ -37,25 +42,77 @@ export const validateParamUserId = (req: Request, res: Response, next: NextFunct
 export const validateUserLoginRequestBody = (req: Request, res: Response, next: NextFunction) => {
     const validationCriteria = Joi.object({
         body: {
-            username: Joi.string().required().empty(''),
-            password: Joi.string().required().empty('')
+            username: Joi.string().required().max(20).error((error) => { 
+                const err = error as Error | unknown;
+                return validatorErrorBuilder(err as Error, USER_USERNAME_REQUIRED); }),
+            password: Joi.string().required().max(50).error((error) => { 
+                const err = error as Error | unknown;
+                return validatorErrorBuilder(err as Error, USER_PASSWORD_REQUIRED); })
         }
     });
     validateRequest(req, next, validationCriteria);
 };
 
+// User patch request body validator
+export const validateUserPatchRequestBody = (req: Request, res: Response, next: NextFunction) => {
+    // User patch payload schema. No field required. But passed fields should have valid data.
+    const userCreatePayloadValidationCriteria = Joi.object({
+        body: {
+            firstName: Joi.string().max(50).error((error) => { 
+                const err = error as Error | unknown;
+                return validatorErrorBuilder(err as Error, USER_FIRST_NAME_REQUIRED); }),
+            lastName: Joi.string().max(50).error((error) => { 
+                const err = error as Error | unknown;
+                return validatorErrorBuilder(err as Error, USER_LAST_NAME_REQUIRED); }),
+            email: Joi.string().email().max(50).error((error) => { 
+                const err = error as Error | unknown;
+                return validatorErrorBuilder(err as Error, USER_EMAIL_REQUIRED); }),
+            role: Joi.string().valid(UserType.ADMIN, UserType.CUSTOMER).error((error) => { 
+                const err = error as Error | unknown;
+                return validatorErrorBuilder(err as Error, USER_ROLE_REQUIRED); }),
+            username: Joi.string().max(20).error((error) => {
+                const err = error as Error | unknown;
+                return validatorErrorBuilder(err as Error, USER_USERNAME_REQUIRED);
+            }),
+            password: Joi.string().max(50).pattern(
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/).error((error) => { 
+                const err = error as Error | unknown;
+                return validatorErrorBuilder(err as Error, USER_PASSWORD_REQUIRED); })
+        }
+    });
+    validateRequest(req, next, userCreatePayloadValidationCriteria);
+};
+
 // User create payload schema
 export const userCreatePayloadValidationCriteria = Joi.object({
     body: {
-        firstName: Joi.string().required().empty(''),
-        lastName: Joi.string().required().empty(''),
-        role: Joi.string().required().empty('').valid(UserType.ADMIN, UserType.CUSTOMER),
-        username: Joi.string().required().empty('').email(),
-        password: Joi.string().required().empty('').pattern(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+        firstName: Joi.string().required().max(50).error((error) => {
+            const err = error as Error | unknown;
+            return validatorErrorBuilder(err as Error, USER_FIRST_NAME_REQUIRED);
+        }),
+        lastName: Joi.string().required().max(50).error((error) => {
+            const err = error as Error | unknown;
+            return validatorErrorBuilder(err as Error, USER_LAST_NAME_REQUIRED);
+        }),
+        email: Joi.string().required().max(50).email().error((error) => {
+            const err = error as Error | unknown;
+            return validatorErrorBuilder(err as Error, USER_EMAIL_REQUIRED);
+        }),
+        role: Joi.string().required().valid(UserType.ADMIN, UserType.CUSTOMER).error((error) => {
+            const err = error as Error | unknown;
+            return validatorErrorBuilder(err as Error, USER_ROLE_REQUIRED);
+        }),
+        username: Joi.string().required().max(20).error((error) => {
+            const err = error as Error | unknown;
+            return validatorErrorBuilder(err as Error, USER_USERNAME_REQUIRED);
+        }),
+        password: Joi.string().required().max(50).pattern(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/).error((error) => {
+            const err = error as Error | unknown;
+            return validatorErrorBuilder(err as Error, USER_PASSWORD_REQUIRED);
+        })
     }
 });
-
 // User create request body validator
 export const validateCreateUserRequestBody = (req: Request, res: Response, next: NextFunction) => {
     validateRequest(req, next, userCreatePayloadValidationCriteria);
@@ -72,10 +129,8 @@ export const validator = (data: object, validationCriteria: Joi.Schema) => {
     const { error } = validationCriteria.validate(data, options);
     if (error) {
         const err = error as Error;
-        const errorDetails: string = error.details[0].message;
         Logging.log(buildErrorMessage(err, 'validate params'), LogType.ERROR);
-        throw new UserServiceError(
-            ErrorType.USER_INVALID_REQUEST, USER_INVALID_REQUEST_MESSAGE, errorDetails, HTTPUserError.BAD_REQUEST_CODE);
+        throw err;
     }
 };
 

@@ -2,7 +2,7 @@
 
 import UserServiceError from './error/UserServiceError';
 import { UserLoginResponse } from './responseType';
-import { IUser } from './userType';
+import { IUser, IUserDTO } from './userType';
 
 export type CreateUserFunc = (user: IUser) => Promise<IUser>;
 
@@ -14,7 +14,15 @@ export enum UpdateFuncStatus {
     UPDATED = 'UPDATE',
     CREATED = 'CREATED'
 }
+export type UserDeleteFunc = (userId: string) => Promise<void>;
+
 export type UserUpdateFunc = (userId: string, user: IUser) => Promise<UpdateFuncStatus>;
+
+export type UserFindAndUpdateFunc = (userId: string, user: IUser) => Promise<IUser | null>;
+
+export type UserSaveFunc = (user: IUser) => Promise<IUser>;
+
+export type UserPatchFunc = (userId: string, user: IUserDTO) => Promise<UpdateFuncStatus>;
 
 export type GetAllUsersReturnType = {
     records: Array<IUser>,
@@ -24,3 +32,5 @@ export type GetAllUsersReturnType = {
 export type GetAllUsersFunc = (page?: number, limit?: number) => Promise<GetAllUsersReturnType>;
 
 export type ServiceErrorBuilderFunc = (errorMessage: string) => void;
+
+export type ValidatorErrorBuilderFunc = (error: Error, errorMessage: string) => UserServiceError;

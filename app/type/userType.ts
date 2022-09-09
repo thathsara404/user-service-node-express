@@ -12,6 +12,7 @@ export interface IUser {
     firstName: string,
     lastName: string,
     role: UserType,
+    email: string,
     username?: string,
     password?: string
 }
@@ -20,6 +21,7 @@ export interface IUserDTO {
     firstName?: string,
     lastName?: string,
     role?: UserType,
+    email?: string,
     username?: string,
     password?: string
 }
