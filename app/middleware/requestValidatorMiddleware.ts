@@ -40,6 +40,7 @@ export const validateParamUserId = (req: Request, res: Response, next: NextFunct
 
 // User login request boy validator
 export const validateUserLoginRequestBody = (req: Request, res: Response, next: NextFunction) => {
+    console.log('------>>>', req.body);
     const validationCriteria = Joi.object({
         body: {
             username: Joi.string().required().max(20).error((error) => { 
