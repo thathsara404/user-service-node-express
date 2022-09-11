@@ -53,17 +53,17 @@ User Service REST API
 # Steps to run manually
 | Step  | Instructions                                | Description                                                                                               |
 | ----- |:--------------------------------------------|:--------------------------------------------------------------------------------------------------------- |
-| 1     | > yarn install | This command will install the dependencies. |
-| 2     | > yarn build | This command will build the User Service REST API. |
-| 3     | > yarn watch | This command will run the build and re-start the server automatically. |
+| 1     | yarn install | This command will install the dependencies. |
+| 2     | yarn build | This command will build the User Service REST API. |
+| 3     | yarn watch | This command will run the build and re-start the server automatically. |
 | 4     | check console | Check the console to get the health route. Also you can check the API spec for more details on routs. And make sure you have setup a Mongo DB locally with the relevant user data in configs |
 
 # Steps to run with Docker-Compose
 | Step  | Instructions                                | Description                                                                                               |
 | ----- |:--------------------------------------------|:--------------------------------------------------------------------------------------------------------- |
-| 1     | docker compose --env-file .env.dev -f docker-compose-dev.yml up --build | Access the project folder with the terminal and run the command. This command will build the Docker image of the application and will start the application container. Besides that, it will initiate a MySQL container in the local Docker.|
+| 1     | docker compose --env-file .env.dev -f docker-compose-dev.yml up --build | Access the project folder with the terminal and run the command. This command will build the Docker image of the application and will start the application container. Besides that, it will initiate a MongoDB container in the local Docker.|
 | 2     | check console | Check the console to get the health route. Also you can check the API spec for more details on routs. |
-| 3     | connect MySQL | You can use a tool like DBeaver to connect the docker MySQL. |
+| 3     | connect MongoDB | You can use a tool like Mongo Compass to connect the docker Mongo container. |
 
 # Steps to run unit test
 | Step  | Instructions                                | Description                                                                                               |
