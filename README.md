@@ -68,7 +68,7 @@ User Service REST API
 # Steps to run unit test
 | Step  | Instructions                                | Description                                                                                               |
 | ----- |:--------------------------------------------|:--------------------------------------------------------------------------------------------------------- |
-| 1     | "docker run --name mongodb -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=testUser -e" | Unit tests have been written in Jest and Supertest. Super test provides a high-level abstraction for testing REST-Full APIs. Supertest needs a database instance while it running. So spin up a docker mongo container with the command given. |
+| 1     | "docker run --name mongodb -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=testUser -e MONGO_INITDB_ROOT_PASSWORD=test mongo" | Unit tests have been written in Jest and Supertest. Super test provides a high-level abstraction for testing REST-Full APIs. Supertest needs a database instance while it running. So spin up a docker mongo container with the command given. |
 | 2     | yarn test | After setting up the Mongo docker container, This command will run the unit tests. |
 # Best Practices
 - make sure your node version is >= 14
