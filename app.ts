@@ -15,7 +15,6 @@ const app = express();
 (async () => {
     await connectToMongoDB();
 })().catch(error => {
-    console.log(error);
     process.exit(1);
 });
 

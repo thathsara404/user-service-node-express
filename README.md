@@ -65,6 +65,11 @@ User Service REST API
 | 2     | check console | Check the console to get the health route. Also you can check the API spec for more details on routs. |
 | 3     | connect MySQL | You can use a tool like DBeaver to connect the docker MySQL. |
 
+# Steps to run unit test
+| Step  | Instructions                                | Description                                                                                               |
+| ----- |:--------------------------------------------|:--------------------------------------------------------------------------------------------------------- |
+| 1     | "docker run --name mongodb -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=testUser -e" | Unit tests have been written in Jest and Supertest. Super test provides a high-level abstraction for testing REST-Full APIs. Supertest needs a database instance while it running. So spin up a docker mongo container with the command given. |
+| 2     | yarn test | After setting up the Mongo docker container, This command will run the unit tests. |
 # Best Practices
 - make sure your node version is >= 14
 - make sure to implement type safety in this module

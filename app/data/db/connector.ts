@@ -16,7 +16,7 @@ const Logging = Logger(__filename);
 // Mongo DB Connection
 export const connectToMongoDB = async () => {
     try {
-        await mongoose.connect('mongodb://testUser:test@localhost:27017/user_service?authSource=admin', {
+        await mongoose.connect(prepareDBConnectionURL(), {
             autoIndex: true
         });
     } catch (error) {
@@ -29,10 +29,10 @@ export const connectToMongoDB = async () => {
     }
 };
 
-// Close connection
-export const closeConnection = async () => {
+// Disconnect connection
+export const disconnect = async () => {
     try {
-        await mongoose.connection.close();
+        await mongoose.disconnect();
     } catch (error) {
         const err = error as Error;
         const dbError = new UserServiceError(ErrorType
@@ -49,6 +49,6 @@ export const prepareDBConnectionURL = (): string => {
         concat(`@${MONGODB_HOST}:${MONGODB_DOCKER_PORT}`).
         concat(`/${MONGODB_DATABASE}?authSource=admin`);
     // Return databaseURL;
-    return 'mongodb://testUser:test@localhost:27017/user_service?authSource=admin';
+    return databaseURL;
 };
 

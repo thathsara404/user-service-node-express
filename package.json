@@ -11,7 +11,7 @@
     "watch-script": "tsc && yarn dev-start",
     "watch": "nodemon --exec yarn watch-script",
     "lint": "eslint . --ext .ts --ext .jsx --ext .js --quiet",
-    "test": "jest --detectOpenHandles",
+    "test": "env-cmd --no-override -e unitTest jest --collectCoverage --detectOpenHandles --verbose",
     "prepare": "husky install"
   },
   "engines": {
