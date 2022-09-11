@@ -1,11 +1,10 @@
 'use strict';
 
-import UserModel from '../data/model/UserModel';
+import { findOneAndUpdate, saveUser, UserModel } from '../data/model/UserModel';
 import UserServiceError from '../type/error/UserServiceError';
 import { CreateUserFunc, GetAllUsersFunc,
     GetUserByFirstNameFunc, UpdateFuncStatus,
-    UserDeleteFunc,
-    UserFindAndUpdateFunc, UserLoginFunc, UserSaveFunc, UserUpdateFunc }
+    UserDeleteFunc, UserLoginFunc, UserUpdateFunc }
     from '../type/userServiceType';
 import { IUser } from '../type/userType';
 import { USER_CREDENTIAL_INVALID_MESSAGE, USER_NOT_FOUND_ERROR_MESSAGE } 
@@ -203,67 +202,6 @@ export const deleteUser: UserDeleteFunc = async (userId) => {
         const err = error as Error;
         serviceErrorBuilder(err.message);
         Logging.log(buildErrorMessage(err, 'updateUser'), LogType.ERROR);
-        throw error;
-    }
-};
-
-/**
- * Find one and update wrapper
- * @param {string} userId Unique identifier of user
- * @param {IUser} user New user data 
- * @returns {IUser | null} Returns null if update doesn't happen. If update success, return IUser
- */
-const findOneAndUpdate: UserFindAndUpdateFunc = async (userId, user) => {
-    try {
-        const dataReceived: IUser = {
-            firstName: user?.firstName,
-            lastName: user.lastName,
-            role: user.role,
-            email: user.email,
-            username: user.username,
-            password: user.password
-        };
-        const userIdAsObjectId = new mongoose.Types.ObjectId(userId);
-        const filter = {
-            _id: userIdAsObjectId
-        };
-        const userFound: IUser | null = await UserModel.findById(filter);
-        const userData = {
-            firstName: userFound?.firstName,
-            lastName: userFound?.lastName,
-            role: userFound?.role,
-            username: userFound?.username,
-            password: userFound?.password
-        };
-        if (userFound) {
-            // Update the document in an atomic way.
-            const newUserData = { ...userData, ...dataReceived };
-            await UserModel.updateOne(filter, newUserData);
-            return newUserData;
-        }
-        return null;
-    } catch (error) {
-        const err = error as Error;
-        serviceErrorBuilder(err.message);
-        Logging.log(buildErrorMessage(err, 'findOneAndUpdate'), LogType.ERROR);
-        throw error;
-    }
-};
-
-/**
- * Save user object wrapper
- * @param {IUser} user New user data 
- * @returns {IUser} Returns IUser object
- */
-const saveUser: UserSaveFunc = async (user) => {
-    try {
-        const userModel = new UserModel(user);
-        const result = await userModel.save();
-        return result;
-    } catch (error) {
-        const err = error as Error;
-        serviceErrorBuilder(err.message);
-        Logging.log(buildErrorMessage(err, 'saveUser'), LogType.ERROR);
         throw error;
     }
 };
