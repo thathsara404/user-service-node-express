@@ -1,5 +1,10 @@
 'use strict';
 
 export interface UserLoginResponse {
-    token: string
+    id: string,
+    token: string,
+    firstName: string,
+    lastName: string,
+    role: string,
+    email: string
 }

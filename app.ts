@@ -8,6 +8,7 @@ import validateJWT from './app/middleware/jwtTokenValidationMiddleware';
 import healthRoute from './app/route/healthRoute';
 import userRoute from './app/route/userRoute';
 import UserServiceError from './app/type/error/UserServiceError';
+import * as cors from 'cors';
 
 const app = express();
 
@@ -17,6 +18,14 @@ const app = express();
 })().catch(error => {
     process.exit(1);
 });
+
+// CORS
+const acceptedOrigins = process.env.ORIGINS 
+    || ['http://localhost:80', 'http://localhost:3000'];
+app.use(cors({
+    origin: acceptedOrigins,
+    optionsSuccessStatus: 200
+}));
 
 // Auth token validation
 app.use((req, res, next) => {

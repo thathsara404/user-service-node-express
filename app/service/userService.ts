@@ -122,7 +122,11 @@ export const userLogin: UserLoginFunc = async (username, password) => {
                     role: userByUsername.role,
                     _id: userByUsername._id as unknown as string
                 };
-                const successResponse = { token: generateJWT(claims) };
+                const successResponse = { token: generateJWT(claims),
+                    firstName: userByUsername.firstName, lastName: userByUsername.lastName,
+                    email: userByUsername.email, role: userByUsername.role,
+                    id: userByUsername._id as unknown as string
+                };
                 return successResponse;
             }
         }

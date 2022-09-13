@@ -1,0 +1,528 @@
+openapi: 3.0.0
+info:
+  title: User REST API
+  version: 1.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/THATHSARARAVIRAJ/User-API/1.0.0
+  - description: Production Instance
+    url:  http://fake-user-api-prod.com/user-api1/catalog/1.0.0
+  - description: SwaggerHub API Auto Mocking
+    url:  https://fake-host.com/user-api1/catalog/1.0.0
+tags:
+  - name: order
+    description: This is an order related operation(s)
+  - name: user
+    description: This is a user related operation(s)
+paths:
+  /orders/{orderId}:
+    get:
+      security: 
+        - bearerAuth: []
+      tags: 
+        - order
+      description: This is the request for get order details by orderId.
+      parameters: 
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: integer
+            example: 12345
+      responses:
+        200:
+          description: This is the requested order detail response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleOrderResponse'
+        500:
+          $ref: '#/components/responses/500ApiError'
+        401:
+          $ref: '#/components/responses/401UnauthorizedError'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        404:
+          $ref: '#/components/responses/404OrderNotFound'
+  /users/{userId}:
+    get:
+      security: 
+        - bearerAuth: []
+      tags: 
+        - user
+      description: This is the request for getting user by userId.
+      parameters: 
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+            example: 12345
+      responses:
+        200:
+          description: This is the requested user detail response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleUserResponse'
+        500:
+          $ref: '#/components/responses/500ApiError'
+        401:
+          $ref: '#/components/responses/401UnauthorizedError'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        404:
+          $ref: '#/components/responses/404UserNotFound'
+    patch:
+      security: 
+        - bearerAuth: []
+      tags: 
+        - user
+      description: This is the reuqest for patching user data. If there is a change, it will be updated. If there is no change, it won't update. If record not found, new record will be created under give resource path. But, to create a new record, all the mandatory fields (of POST) should be supplied.
+      parameters: 
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+            example: 12345
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/SingleUserPatchRequest'
+      responses:
+        201:
+          $ref: '#/components/responses/201UserCreated'
+        204:
+          $ref: '#/components/responses/204UserUpdated'
+        500:
+          $ref: '#/components/responses/500ApiError'
+        400:
+          $ref: '#/components/responses/400InvalidRequestParams'
+        401:
+          $ref: '#/components/responses/401UnauthorizedError'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        404:
+          $ref: '#/components/responses/404UserNotFound'
+        409:
+          $ref: '#/components/responses/409ConflictUserData'
+    put:
+      security: 
+        - bearerAuth: []
+      tags: 
+        - user
+      description: This is the reuqest for updating user data. If there is a change or not, resource will be updated. If record not found, new record will be created under give resource path.
+      parameters: 
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+            example: 12345
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/SingleUserPutRequest'
+      responses:
+        201:
+          $ref: '#/components/responses/201UserCreated'
+        204:
+          $ref: '#/components/responses/204UserUpdated'
+        500:
+          $ref: '#/components/responses/500ApiError'
+        400:
+          $ref: '#/components/responses/400InvalidRequestParams'
+        401:
+          $ref: '#/components/responses/401UnauthorizedError'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        409: 
+          $ref: '#/components/responses/409ConflictUserData'
+    delete:
+      security: 
+        - bearerAuth: []
+      tags: 
+        - user
+      description: Delete specific user.
+      parameters: 
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+            example: 12345
+      responses:
+        204:
+          $ref: '#/components/responses/204UserDeleted'
+        500:
+          $ref: '#/components/responses/500ApiError'
+        400:
+          $ref: '#/components/responses/400InvalidRequestParams'
+        401:
+          $ref: '#/components/responses/401UnauthorizedError'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        404:
+          $ref: '#/components/responses/404UserNotFound'
+          
+  /login:
+    post:
+      security: 
+        - bearerAuth: []
+      tags: 
+        - user
+      description: This is the login route.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        200:
+          description: This is the login request response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleUserResponse'
+        500:
+          $ref: '#/components/responses/500ApiError'
+        401:
+          $ref: '#/components/responses/401LoginUnauthorizedError'
+          
+  /users:
+    get:
+      security: 
+        - bearerAuth: []
+      tags: 
+        - user
+      description: This is the request for getting user data by first name.
+      parameters: 
+        - in: query
+          name: firstName
+          description: User's first name
+          required: false
+          schema:
+            type: string
+            example: "thathsara"
+      responses:
+        200:
+          description: This is the requested user detail response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleUserResponse'
+        500:
+          $ref: '#/components/responses/500ApiError'
+        401:
+          $ref: '#/components/responses/401UnauthorizedError'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        404:
+          $ref: '#/components/responses/404UserNotFound'
+    post:
+      tags: 
+        - user
+      description: This is the request for adding a user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        201:
+          description: New user has been created
+        500:
+          $ref: '#/components/responses/500ApiError'
+        400:
+          $ref: '#/components/responses/400InvalidRequestParams'
+        401:
+          $ref: '#/components/responses/401UnauthorizedError'
+        403:
+          $ref: '#/components/responses/403Forbidden'
+        303:
+          $ref: '#/components/responses/303FoundAtThisLocation'
+        409:
+          $ref: '#/components/responses/409ConflictUserData'
+components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      
+  headers:
+    Default-Content-Location:
+      schema:
+        type: string
+        description: Location for updated data
+        example: /userService
+    User-Content-Location:
+      schema:
+        type: string
+        description: Location for updated data
+        example: /userService/{userId} 
+        
+  schemas:
+    SingleOrderResponse:
+      type: object
+      properties:
+        data:
+          required:
+            - orderName
+            - id
+            - price
+            - date
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 12345
+            orderName:
+              type: string
+              example: "Animal health test kit"
+            price:
+              type: string
+              example: "USD 1200"
+            date:
+              type: string
+              example: "01-09-2022"
+    SingleUserResponse:
+      type: object
+      properties:
+        data:
+          required:
+            - _id
+            - firstName
+            - lastName
+            - email
+            - role
+          type: object
+          properties:
+            _id:
+              type: integer
+              example: 12345
+            firstName:
+              type: string
+              example: "Thathsara"
+            lastName:
+              type: string
+              example: "Raviraj"
+            email:
+              type: string
+              example: "thathsara@example.com"
+            role:
+              type: string
+              enum: ["customer", "admin"]
+              example: "customer"
+    SingleUserPatchRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: "Thathsara"
+        lastName:
+          type: string
+          example: "Raviraj"
+        email:
+          type: string
+          format: email
+          pattern: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/
+          example: "thathsara@gmail.com"
+        role:
+          type: string
+          enum: ["customer", "admin"]
+          example: "customer"
+        password:
+          type: string
+          format: password
+          pattern: ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$
+          description: Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character
+          example: "sqwrW1#!"
+    SingleUserPutRequest:
+      required:
+        - firstName
+        - lastName
+        - role
+        - email
+        - password
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: "Thathsara"
+        lastName:
+          type: string
+          example: "Raviraj"
+        role:
+          type: string
+          enum: ["customer", "admin"]
+          example: "customer"
+        email:
+          type: string
+          format: email
+          pattern: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/
+          example: "thathsara@gmail.com"
+        password:
+          type: string
+          format: password
+          pattern: ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$
+          description: Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character
+          example: "sqwrW1#!"
+    CreateUserRequest:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - email
+        - role
+        - username
+        - password
+      properties:
+        firstName:
+          type: string
+          example: "Thathsara"
+        lastName:
+          type: string
+          example: "Raviraj"
+        role:
+          type: string
+          enum: ["customer", "admin"]
+          example: "customer"
+        email:
+          type: string
+          format: email
+          pattern: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/
+          example: "tr@gmail.com"
+          description: Should be an email address
+        username:
+          type: string
+          example: thathsara
+        password:
+          type: string
+          format: password
+          pattern: ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$
+          description: Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character
+          example: "sqwrW1#!"
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          example: thathsara
+        password:
+          type: string
+          format: password
+          pattern: ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$
+          description: Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character
+          example: "sqwrW1#!"
+          
+  responses:
+    201UserCreated:
+      description: Successfully created user data.
+      headers: 
+        Content-Location:
+          $ref: '#/components/headers/User-Content-Location'
+    204UserDeleted:
+        description: No Content. Successfully deleted user data.
+    204UserUpdated:
+      description: No Conetent. Successfully updated user data.
+      headers: 
+        Content-Location:
+          $ref: '#/components/headers/User-Content-Location'
+    500ApiError:
+      description: "Server sent 500"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "This is an internal server error"
+    400InvalidRequestParams:
+      description: "Server sent 400 to the user request"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "The request body and/or parameters have malformed element(s)."
+    401UnauthorizedError:
+      description: "Server sent 401 to the user search"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Access token is missing or invalid"
+    401LoginUnauthorizedError:
+      description: "Server sent 401 to the user login"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Invalid credentials"
+    403Forbidden:
+      description: "Server sent 403 to the user search"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "USer doesn't have access to the requested resource"
+    404UserNotFound:
+      description: "Server sent 404 to the user search"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Couldn't find user"
+    404OrderNotFound:
+      description: "Server sent 404 to the order search"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Couldn't find order"
+    409ConflictUserData:
+      description: "Server sent 409 to the user request"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Couldn't be processed due to a conflict"
+    303FoundAtThisLocation:
+      description: Resource found at this locaton.
+      headers:
+        Content-Location:
+          $ref: '#/components/headers/User-Content-Location'
